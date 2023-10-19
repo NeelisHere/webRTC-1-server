@@ -1,7 +1,9 @@
 const { Server } = require('socket.io')
-// const port = process.env.PORT || 8000
+require('dotenv').config();
 
-const io = new Server(8000, { cors: true })
+const port = process.env.PORT || 8000
+
+const io = new Server(port, { cors: true })
 
 const usernameToSocketMapping = {}
 const socketToUsernameMapping = {}
@@ -36,6 +38,9 @@ io.on('connection', (socket) => {
 
     socket.on("disconnect", (reason) => {
         console.log(`Socket disconnected: ${socketToUsernameMapping[socket.id]}`)
+        const targetUser = socketToUsernameMapping[socket.id]
+        delete socketToUsernameMapping[socket.id]
+        delete usernameToSocketMapping[targetUser]
     });
 })
 
